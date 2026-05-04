@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FCU Eats</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #eef2ff 0%, #f8fafc 42%, #f8fafc 100%);
+      color: #111827;
+    }
+
+    .phone {
+      max-width: 430px;
+      min-height: 100vh;
+      margin: 0 auto;
+      background: #f8fafc;
+      position: relative;
+      overflow: hidden;
+      padding-bottom: 92px;
+      box-shadow: 0 0 40px rgba(15, 23, 42, 0.08);
+    }
+
+    .top {
+      background: linear-gradient(135deg, #111827, #334155);
+      color: white;
+      padding: 18px 18px 26px;
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      opacity: 0.92;
+      margin-bottom: 18px;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand p {
+      margin: 5px 0 0;
+      color: #dbeafe;
+      font-size: 14px;
+    }
+
+    .avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 17px;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .search-box {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border-radius: 18px;
+      padding: 13px 15px;
+      color: #64748b;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      font-size: 15px;
+      background: transparent;
+      color: #111827;
+    }
+
+    .content {
+      padding: 18px;
+    }
+
+    .quick-card {
+      background: #fff7ed;
+      border-radius: 24px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      border: 1px solid #fed7aa;
+    }
+
+    .quick-card h2 {
+      margin: 0 0 5px;
+      font-size: 18px;
+    }
+
+    .quick-card p {
+      margin: 0;
+      color: #9a3412;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .quick-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 20px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 8px 18px rgba(154, 52, 18, 0.12);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      margin: 18px 0 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .section-title span {
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .category-bar {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      scrollbar-width: none;
+    }
+
+    .category-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-btn {
+      border: 0;
+      min-width: 72px;
+      border-radius: 18px;
+      background: white;
+      color: #475569;
+      padding: 12px 12px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(15, 23, 42, 0.06);
+    }
+
+    .category-btn.active {
+      background: #111827;
+      color: white;
+    }
+
+    .shop-card {
+      background: white;
+      border-radius: 26px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 13px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+      border: 1px solid #eef2f7;
+    }
+
+    .shop-img {
+      width: 92px;
+      min-width: 92px;
+      height: 92px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #fde68a, #fb923c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      overflow: hidden;
+    }
+
+    .shop-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .shop-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .shop-name {
+      margin: 2px 0 6px;
+      font-size: 17px;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .open, .closed {
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+      padding-top: 4px;
+    }
+
+    .open { color: #16a34a; }
+    .closed { color: #ef4444; }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .pill {
+      background: #f1f5f9;
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+
+    .menu-btn {
+      border: 0;
+      width: 100%;
+      margin-top: 10px;
+      background: #111827;
+      color: white;
+      border-radius: 15px;
+      padding: 10px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .empty {
+      text-align: center;
+      color: #64748b;
+      padding: 42px 0;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      width: min(396px, calc(100% - 28px));
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 26px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 10px 8px;
+      z-index: 10;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .nav-item div {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .nav-item.active {
+      color: #111827;
+    }
+
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      padding: 18px;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .modal {
+      background: white;
+      width: 100%;
+      max-width: 430px;
+      border-radius: 30px;
+      padding: 18px;
+      animation: slideUp .2s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-cover {
+      height: 120px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, #fde68a, #fb923c);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 58px;
+      margin-bottom: 14px;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .modal-head h2 {
+      margin: 0 0 5px;
+      font-size: 22px;
+    }
+
+    .modal-head p {
+      margin: 0;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .close-btn {
+      border: 0;
+      background: #f1f5f9;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1px solid #eef2f7;
+      border-radius: 18px;
+      padding: 14px 15px;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .price {
+      font-weight: 900;
+    }
+
+    .footer-note {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      margin: 22px 0 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="phone">
+    <section class="top">
+      <div class="status">
+        <span>9:41</span>
+        <span>FCU Campus ・ Wi‑Fi</span>
+      </div>
+
+      <div class="brand-row">
+        <div class="brand">
+          <h1>FCU Eats</h1>
+          <p>下課 10 秒找好吃的</p>
+        </div>
+        <div class="avatar">🍽️</div>
+      </div>
+
+      <div class="search-box">
+        <span>🔍</span>
+        <input id="searchInput" type="text" placeholder="搜尋雞排、飲料、便當">
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="quick-card">
+        <div>
+          <h2>今天想吃什麼？</h2>
+          <p>依距離排序，快速看店家、菜單與營業狀態。</p>
+        </div>
+        <div class="quick-icon">🍱</div>
+      </div>
+
+      <div class="section-title">
+        <h2>分類</h2>
+        <span>左右滑動</span>
+      </div>
+      <div class="category-bar" id="categoryBar"></div>
+
+      <div class="section-title">
+        <h2>附近店家</h2>
+        <span id="shopCount"></span>
+      </div>
+      <div id="shopList"></div>
+
+      <p class="footer-note">報告展示版：資料為範例，可自行改成真實店家</p>
+    </section>
+
+    <nav class="bottom-nav">
+      <div class="nav-item active"><div>🏠</div>首頁</div>
+      <div class="nav-item"><div>🧭</div>附近</div>
+      <div class="nav-item"><div>⭐</div>收藏</div>
+      <div class="nav-item"><div>👤</div>我的</div>
+    </nav>
+  </main>
+
+  <section class="modal-bg" id="modalBg">
+    <div class="modal">
+      <div class="modal-cover" id="modalEmoji">🍱</div>
+      <div class="modal-head">
+        <div>
+          <h2 id="modalTitle"></h2>
+          <p id="modalDistance"></p>
+        </div>
+        <button class="close-btn" onclick="closeMenu()">關閉</button>
+      </div>
+      <div id="menuList"></div>
+      <button class="menu-btn" onclick="closeMenu()">回到列表</button>
+    </div>
+  </section>
+
+  <script>
+    const shops = [
+      {
+        name: "逢甲雞腿飯",
+        category: "便當",
+        emoji: "🍱",
+        distance: 120,
+        time: "步行約 2 分鐘",
+        open: true,
+        rating: 4.6,
+        menu: [
+          { item: "雞腿飯", price: 95 },
+          { item: "排骨飯", price: 90 },
+          { item: "滷肉飯", price: 45 }
+        ]
+      },
+      {
+        name: "黑糖珍奶專賣",
+        category: "飲料",
+        emoji: "🧋",
+        distance: 80,
+        time: "步行約 1 分鐘",
+        open: true,
+        rating: 4.4,
+        menu: [
+          { item: "黑糖珍珠鮮奶", price: 65 },
+          { item: "紅茶拿鐵", price: 55 },
+          { item: "冬瓜檸檬", price: 45 }
+        ]
+      },
+      {
+        name: "巷口牛肉麵",
+        category: "麵食",
+        emoji: "🍜",
+        distance: 260,
+        time: "步行約 4 分鐘",
+        open: false,
+        rating: 4.2,
+        menu: [
+          { item: "牛肉麵", price: 130 },
+          { item: "榨菜肉絲麵", price: 80 },
+          { item: "水餃", price: 70 }
+        ]
+      },
+      {
+        name: "逢甲夜市雞排",
+        category: "小吃",
+        emoji: "🍗",
+        distance: 350,
+        time: "步行約 5 分鐘",
+        open: true,
+        rating: 4.8,
+        menu: [
+          { item: "大雞排", price: 85 },
+          { item: "甜不辣", price: 45 },
+          { item: "薯條", price: 40 }
+        ]
+      },
+      {
+        name: "早安逢甲早餐店",
+        category: "早餐",
+        emoji: "🥪",
+        distance: 180,
+        time: "步行約 3 分鐘",
+        open: true,
+        rating: 4.3,
+        menu: [
+          { item: "蛋餅", price: 35 },
+          { item: "鐵板麵", price: 55 },
+          { item: "奶茶", price: 25 }
+        ]
+      }
+    ];
+
+    const categories = ["全部", "便當", "飲料", "麵食", "小吃", "早餐"];
+    let currentCategory = "全部";
+
+    const categoryBar = document.getElementById("categoryBar");
+    const shopList = document.getElementById("shopList");
+    const searchInput = document.getElementById("searchInput");
+    const shopCount = document.getElementById("shopCount");
+
+    function renderCategories() {
+      categoryBar.innerHTML = "";
+      categories.forEach(category => {
+        const button = document.createElement("button");
+        button.className = "category-btn" + (category === currentCategory ? " active" : "");
+        button.textContent = category;
+        button.onclick = () => {
+          currentCategory = category;
+          renderCategories();
+          renderShops();
+        };
+        categoryBar.appendChild(button);
+      });
+    }
+
+    function renderShops() {
+      const keyword = searchInput.value.trim();
+
+      const filtered = shops
+        .filter(shop => currentCategory === "全部" || shop.category === currentCategory)
+        .filter(shop => {
+          const menuText = shop.menu.map(m => m.item).join(" ");
+          return (shop.name + shop.category + menuText).includes(keyword);
+        })
+        .sort((a, b) => a.distance - b.distance);
+
+      shopCount.textContent = filtered.length + " 間";
+      shopList.innerHTML = "";
+
+      if (filtered.length === 0) {
+        shopList.innerHTML = '<div class="empty">找不到符合的店家</div>';
+        return;
+      }
+
+      filtered.forEach(shop => {
+        const card = document.createElement("article");
+        card.className = "shop-card";
+        card.innerHTML = `
+          <div class="shop-img">${shop.emoji}</div>
+          <div class="shop-body">
+            <div class="shop-head">
+              <div>
+                <h3 class="shop-name">${shop.name}</h3>
+              </div>
+              <div class="${shop.open ? "open" : "closed"}">
+                ${shop.open ? "營業中" : "休息中"}
+              </div>
+            </div>
+            <div class="meta">
+              <span class="pill">${shop.category}</span>
+              <span class="pill">📍 ${shop.distance}m</span>
+              <span class="pill">⭐ ${shop.rating}</span>
+              <span class="pill">🚶 ${shop.time}</span>
+            </div>
+            <button class="menu-btn" onclick="openMenu(${shops.indexOf(shop)})">查看菜單</button>
+          </div>
+        `;
+        shopList.appendChild(card);
+      });
+    }
+
+    function openMenu(index) {
+      const shop = shops[index];
+      document.getElementById("modalEmoji").textContent = shop.emoji;
+      document.getElementById("modalTitle").textContent = shop.name;
+      document.getElementById("modalDistance").textContent = `${shop.category}・${shop.distance}m・${shop.time}・評分 ${shop.rating}`;
+      document.getElementById("menuList").innerHTML = shop.menu.map(m => `
+        <div class="menu-item">
+          <span>${m.item}</span>
+          <span class="price">$${m.price}</span>
+        </div>
+      `).join("");
+      document.getElementById("modalBg").style.display = "flex";
+    }
+
+    function closeMenu() {
+      document.getElementById("modalBg").style.display = "none";
+    }
+
+    searchInput.addEventListener("input", renderShops);
+
+    renderCategories();
+    renderShops();
+  </script>
+</body>
+</html>
