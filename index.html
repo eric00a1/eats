@@ -1,230 +1,512 @@
+
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FCU Eats Map</title>
-  <style>
-    * { box-sizing: border-box; font-family: "Microsoft JhengHei", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; background: #f8fafc; color: #111827; }
-    .phone { max-width: 430px; min-height: 100vh; margin: 0 auto; background: #f8fafc; padding-bottom: 92px; box-shadow: 0 0 40px rgba(15, 23, 42, 0.08); }
-    .top { background: linear-gradient(135deg, #111827, #334155); color: white; padding: 18px 18px 26px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
-    .status { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.9; margin-bottom: 18px; }
-    .brand-row { display: flex; justify-content: space-between; align-items: center; }
-    .brand h1 { margin: 0; font-size: 30px; }
-    .brand p { margin: 5px 0 0; color: #dbeafe; font-size: 14px; }
-    .avatar { width: 46px; height: 46px; border-radius: 17px; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 24px; }
-    .search-box { margin-top: 20px; display: flex; align-items: center; gap: 10px; background: white; border-radius: 18px; padding: 13px 15px; color: #64748b; box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18); }
-    .search-box input { width: 100%; border: 0; outline: 0; font-size: 15px; background: transparent; color: #111827; }
-    .content { padding: 18px; }
-    .map-card { background: white; border-radius: 24px; padding: 14px; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07); }
-    .map-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .map-title h2 { margin: 0; font-size: 18px; }
-    .map-title span { font-size: 12px; color: #64748b; }
-    iframe { width: 100%; height: 210px; border: 0; border-radius: 18px; background: #e5e7eb; }
-    .section-title { display: flex; align-items: end; justify-content: space-between; margin: 18px 0 12px; }
-    .section-title h2 { margin: 0; font-size: 21px; }
-    .section-title span { color: #64748b; font-size: 13px; }
-    .category-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
-    .category-bar::-webkit-scrollbar { display: none; }
-    .category-btn { border: 0; min-width: 72px; border-radius: 18px; background: white; color: #475569; padding: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 5px 15px rgba(15, 23, 42, 0.06); }
-    .category-btn.active { background: #111827; color: white; }
-    .shop-card {
-      background: white;
-      border-radius: 30px;
-      padding: 16px;
-      margin-bottom: 18px;
-      display: flex;*******
-      gap: 16px;
-      box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-      border: none;
-      transition: 0.2s;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FCU Eats</title>
 
-    .shop-card:hover {
-      transform: translateY(-3px);
-    }
-    .shop-img {
-      width: 600px;
-      min-width: 60px;
-      height: 60px;
-      border-radius: 24px;
-      overflow: hidden;
-      background: #e5e7eb;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    }
+<style>
 
-    .shop-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      display: block;
-    }
-    .shop-body { flex: 1; min-width: 0; }
-    .shop-head { display: flex; justify-content: space-between; gap: 8px; }
-    .shop-name { margin: 2px 0 6px; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .open, .closed { font-size: 12px; font-weight: 900; white-space: nowrap; padding-top: 4px; }
-    .open { color: #16a34a; } .closed { color: #ef4444; }
-    .meta { display: flex; flex-wrap: wrap; gap: 6px; color: #64748b; font-size: 12px; line-height: 1.5; }
-    .pill { background: #f1f5f9; border-radius: 999px; padding: 4px 8px; }
-    .button-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-    .menu-btn, .map-btn { border: 0; border-radius: 15px; padding: 10px; font-weight: 900; cursor: pointer; }
-    .menu-btn { background: #111827; color: white; }
-    .map-btn { background: #e0f2fe; color: #0369a1; }
-    .empty { text-align: center; color: #64748b; padding: 42px 0; }
-    .bottom-nav { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); width: min(396px, calc(100% - 28px)); background: rgba(255,255,255,0.92); backdrop-filter: blur(16px); border: 1px solid rgba(226, 232, 240, 0.9); border-radius: 26px; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18); display: grid; grid-template-columns: repeat(4, 1fr); padding: 10px 8px; z-index: 10; }
-    .nav-item { text-align: center; color: #94a3b8; font-size: 11px; font-weight: 800; }
-    .nav-item div { font-size: 20px; margin-bottom: 2px; }
-    .nav-item.active { color: #111827; }
-    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.52); padding: 18px; align-items: flex-end; justify-content: center; z-index: 20; }
-    .modal { background: white; width: 100%; max-width: 430px; border-radius: 30px; padding: 18px; }
-    .modal-cover { height: 100px; border-radius: 24px; background: linear-gradient(135deg, #fde68a, #fb923c); display: flex; align-items: center; justify-content: center; font-size: 54px; margin-bottom: 14px; overflow: hidden; }\n    .modal-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .modal-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 14px; }
-    .modal-head h2 { margin: 0 0 5px; font-size: 22px; }
-    .modal-head p { margin: 0; color: #64748b; font-size: 13px; }
-    .close-btn { border: 0; background: #f1f5f9; border-radius: 999px; padding: 8px 12px; font-weight: 800; cursor: pointer; }
-    .menu-item { display: flex; justify-content: space-between; background: #f8fafc; border: 1px solid #eef2f7; border-radius: 18px; padding: 14px 15px; margin-bottom: 10px; font-size: 15px; }
-    .price { font-weight: 900; }
-  </style>
+body{
+margin:0;
+font-family:Arial;
+background:#f4f6f9;
+}
+
+.phone{
+max-width:430px;
+margin:auto;
+}
+
+.top{
+background:#111827;
+color:white;
+padding:20px;
+border-bottom-left-radius:30px;
+border-bottom-right-radius:30px;
+}
+
+.search-box input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:15px;
+margin-top:10px;
+}
+
+.content{
+padding:15px;
+}
+
+.shop-card{
+background:white;
+padding:15px;
+border-radius:25px;
+margin-bottom:15px;
+display:flex;
+gap:15px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.shop-img{
+width:90px;
+height:90px;
+overflow:hidden;
+border-radius:20px;
+flex-shrink:0;
+}
+
+.shop-img img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.shop-body{
+flex:1;
+}
+
+.shop-name{
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.meta{
+font-size:13px;
+color:#666;
+margin-bottom:10px;
+}
+
+.button-row{
+display:flex;
+gap:8px;
+}
+
+button{
+padding:10px;
+border:none;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.menu-btn{
+background:#111827;
+color:white;
+}
+
+.map-btn{
+background:#dbeafe;
+}
+
+iframe{
+width:100%;
+height:220px;
+border:none;
+border-radius:20px;
+margin-bottom:15px;
+}
+
+.modal-bg{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.5);
+justify-content:center;
+align-items:center;
+}
+
+.modal{
+background:white;
+padding:20px;
+border-radius:25px;
+width:90%;
+max-width:400px;
+}
+
+.menu-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+}
+
+</style>
 </head>
+
 <body>
-  <main class="phone">
-    <section class="top">
-      <div class="status"><span>9:41</span><span>FCU Campus ・ Map</span></div>
-      <div class="brand-row"><div class="brand"><h1>FCU Eats</h1><p>下課 10 秒找好吃的</p></div><div class="avatar">🍽️</div></div>
-      <div class="search-box"><span>🔍</span><input id="searchInput" type="text" placeholder="搜尋雞排、飲料、便當"></div>
-    </section>
-    <section class="content">
-      <div class="map-card">
-        <div class="map-title"><h2 id="mapTitle">逢甲大學周邊地圖</h2><span>免費地圖展示</span></div>
-        <iframe id="mapFrame" src="https://www.openstreetmap.org/export/embed.html?bbox=120.6420%2C24.1750%2C120.6510%2C24.1830&layer=mapnik&marker=24.1790%2C120.6465"></iframe>
-      </div>
-      <div class="section-title"><h2>分類</h2><span>左右滑動</span></div>
-      <div class="category-bar" id="categoryBar"></div>
-      <div class="section-title"><h2>附近店家</h2><span id="shopCount"></span></div>
-      <div id="shopList"></div>
-    </section>
-    <nav class="bottom-nav">
-      <div class="nav-item active"><div>🏠</div>首頁</div>
-      <div class="nav-item"><div>🗺️</div>地圖</div>
-      <div class="nav-item"><div>⭐</div>收藏</div>
-      <div class="nav-item"><div>👤</div>我的</div>
-    </nav>
-  </main>
 
-  <section class="modal-bg" id="modalBg">
-    <div class="modal">
-      <div class="modal-cover" id="modalCover"></div>
-      <div class="modal-head"><div><h2 id="modalTitle"></h2><p id="modalDistance"></p></div><button class="close-btn" onclick="closeMenu()">關閉</button></div>
-      <div id="menuList"></div>
-      <button class="menu-btn" onclick="closeMenu()">回到列表</button>
-    </div>
-  </section>
+<div class="phone">
 
-  <script>
-    const shops = [
-      { name: "逢甲雞腿飯", category: "便當", img: "2.JPG", distance: 120, time: "步行約 2 分鐘", open: true, rating: 4.6, lat: 24.1792, lng: 120.6462, menu: [{ item: "雞腿飯", price: 95 }, { item: "排骨飯", price: 90 }, { item: "滷肉飯", price: 45 }] },
-      { name: "50嵐 逢甲文華店", category: "飲料", img: "3.JPG", distance: 80, time: "步行約 1 分鐘", open: true, rating: 4.4, lat: 24.1798, lng: 120.6468, menu: [{ item: "黑糖珍珠鮮奶", price: 65 }, { item: "紅茶拿鐵", price: 55 }, { item: "冬瓜檸檬", price: 45 }] },
-      { name: "台中老蕭牛肉麵店", category: "麵食", img: "4.JPG", distance: 260, time: "步行約 4 分鐘", open: false, rating: 4.2, lat: 24.1806, lng: 120.6454, menu: [{ item: "牛肉麵", price: 130 }, { item: "榨菜肉絲麵", price: 80 }, { item: "水餃", price: 70 }] },
-      { name: "逢甲夜市雞排", category: "小吃", img: "5.JPG", distance: 350, time: "步行約 5 分鐘", open: true, rating: 4.8, lat: 24.1784, lng: 120.6451, menu: [{ item: "大雞排", price: 85 }, { item: "甜不辣", price: 45 }, { item: "薯條", price: 40 }] },
-      { name: "早安逢甲早餐店", category: "早餐", img: "6.JPG", distance: 180, time: "步行約 3 分鐘", open: true, rating: 4.3, lat: 24.1795, lng: 120.6474, menu: [{ item: "蛋餅", price: 35 }, { item: "鐵板麵", price: 55 }, { item: "奶茶", price: 25 }] }
-    ];
+<div class="top">
+<h1>FCU Eats</h1>
+<p>逢甲附近快速找美食</p>
 
-    const categories = ["全部", "便當", "飲料", "麵食", "小吃", "早餐"];
-    let currentCategory = "全部";
-    const categoryBar = document.getElementById("categoryBar");
-    const shopList = document.getElementById("shopList");
-    const searchInput = document.getElementById("searchInput");
-    const shopCount = document.getElementById("shopCount");
-    const mapFrame = document.getElementById("mapFrame");
-    const mapTitle = document.getElementById("mapTitle");
+<div class="search-box">
+<input id="searchInput" placeholder="搜尋店家">
+</div>
 
-    function renderCategories() {
-      categoryBar.innerHTML = "";
-      categories.forEach(category => {
-        const button = document.createElement("button");
-        button.className = "category-btn" + (category === currentCategory ? " active" : "");
-        button.textContent = category;
-        button.onclick = () => { currentCategory = category; renderCategories(); renderShops(); };
-        categoryBar.appendChild(button);
-      });
-    }
+</div>
 
-    function showOnMap(index) {
-      const shop = shops[index];
-      const lat = shop.lat;
-      const lng = shop.lng;
-      const offset = 0.003;
-      const bbox = `${lng - offset}%2C${lat - offset}%2C${lng + offset}%2C${lat + offset}`;
-      mapFrame.src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}`;
-      mapTitle.textContent = shop.name + " 的位置";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+<div class="content">
 
-    function openNavigation(index) {
-      const shop = shops[index];
-      const url = `https://www.google.com/maps/search/?api=1&query=${shop.lat},${shop.lng}`;
-      window.open(url, "_blank");
-    }
+<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=120.6420%2C24.1750%2C120.6510%2C24.1830&layer=mapnik"></iframe>
 
-    function renderShops() {
-      const keyword = searchInput.value.trim();
-      const filtered = shops
-        .filter(shop => currentCategory === "全部" || shop.category === currentCategory)
-        .filter(shop => (shop.name + shop.category + shop.menu.map(m => m.item).join(" ")).includes(keyword))
-        .sort((a, b) => a.distance - b.distance);
+<div id="shopList"></div>
 
-      shopCount.textContent = filtered.length + " 間";
-      shopList.innerHTML = "";
+</div>
+</div>
 
-      if (filtered.length === 0) {
-        shopList.innerHTML = '<div class="empty">找不到符合的店家</div>';
-        return;
-      }
+<div class="modal-bg" id="modalBg">
+<div class="modal">
+<h2 id="modalTitle"></h2>
+<div id="menuList"></div>
+<button onclick="closeMenu()">關閉</button>
+</div>
+</div>
 
-      filtered.forEach(shop => {
-        const originalIndex = shops.indexOf(shop);
-        const card = document.createElement("article");
-        card.className = "shop-card";
-        card.innerHTML = `
-          <div class="shop-img"><img src="${shop.img}" alt="${shop.name}"></div>
-          <div class="shop-body">
-            <div class="shop-head">
-              <h3 class="shop-name">${shop.name}</h3>
-              <div class="${shop.open ? "open" : "closed"}">${shop.open ? "營業中" : "休息中"}</div>
-            </div>
-            <div class="meta">
-              <span class="pill">${shop.category}</span>
-              <span class="pill">📍 ${shop.distance}m</span>
-              <span class="pill">⭐ ${shop.rating}</span>
-              <span class="pill">🚶 ${shop.time}</span>
-            </div>
-            <div class="button-row">
-              <button class="menu-btn" onclick="openMenu(${originalIndex})">菜單</button>
-              <button class="map-btn" onclick="showOnMap(${originalIndex})">看地圖</button>
-            </div>
-            <button class="map-btn" style="width:100%;margin-top:8px;" onclick="openNavigation(${originalIndex})">開 Google Maps 導航</button>
-          </div>
-        `;
-        shopList.appendChild(card);
-      });
-    }
+<script>
 
-    function openMenu(index) {
-      const shop = shops[index];
-      document.getElementById("modalCover").innerHTML = `<img src="${shop.img}" alt="${shop.name}">`;
-      document.getElementById("modalTitle").textContent = shop.name;
-      document.getElementById("modalDistance").textContent = `${shop.category}・${shop.distance}m・${shop.time}・評分 ${shop.rating}`;
-      document.getElementById("menuList").innerHTML = shop.menu.map(m => `<div class="menu-item"><span>${m.item}</span><span class="price">$${m.price}</span></div>`).join("");
-      document.getElementById("modalBg").style.display = "flex";
-    }
+const shops = [
 
-    function closeMenu() { document.getElementById("modalBg").style.display = "none"; }
+{
+name: "辣訣-秘藏鍋物-台中逢甲店",
+category: "火鍋",
+img: "19.JPG",
+distance: 100,
+rating: 4.1,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 80 },
+{ item: "人氣套餐", price: 120 },
+{ item: "飲料", price: 30 }
+]
+},
 
-    searchInput.addEventListener("input", renderShops);
-    renderCategories();
-    renderShops();
-  </script>
+{
+name: "好而大",
+category: "小吃",
+img: "6.JPG",
+distance: 120,
+rating: 4.2,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 85 },
+{ item: "人氣套餐", price: 125 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "星空Stellato（逢甲店）義大利麵、燉飯",
+category: "義式",
+img: "18.JPG",
+distance: 140,
+rating: 4.3,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 90 },
+{ item: "人氣套餐", price: 130 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "台中老蕭牛肉麵店",
+category: "麵食",
+img: "21.JPG",
+distance: 160,
+rating: 4.4,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 95 },
+{ item: "人氣套餐", price: 135 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "呷尚寶逢甲店",
+category: "早餐",
+img: "16.JPG",
+distance: 180,
+rating: 4.5,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 100 },
+{ item: "人氣套餐", price: 140 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "MAK&MAY II‧BESSIE'S KITCHEN",
+category: "早午餐",
+img: "17.JPG",
+distance: 200,
+rating: 4.1,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 105 },
+{ item: "人氣套餐", price: 145 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "七味廚坊",
+category: "簡餐",
+img: "15.JPG",
+distance: 220,
+rating: 4.2,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 110 },
+{ item: "人氣套餐", price: 150 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "烏竹樓 台式料理",
+category: "台式",
+img: "5.JPG",
+distance: 240,
+rating: 4.3,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 115 },
+{ item: "人氣套餐", price: 155 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "日糧便當",
+category: "便當",
+img: "13.JPG",
+distance: 260,
+rating: 4.4,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 120 },
+{ item: "人氣套餐", price: 160 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "豐成麵館",
+category: "麵食",
+img: "12.JPG",
+distance: 280,
+rating: 4.5,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 125 },
+{ item: "人氣套餐", price: 165 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "魯夫滷味西屯逢甲店",
+category: "滷味",
+img: "11.JPG",
+distance: 300,
+rating: 4.1,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 130 },
+{ item: "人氣套餐", price: 170 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "50嵐 逢甲文華店",
+category: "飲料",
+img: "10.JPG",
+distance: 320,
+rating: 4.2,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 135 },
+{ item: "人氣套餐", price: 175 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "解憂牛肉麵 逢甲店",
+category: "麵食",
+img: "9.JPG",
+distance: 340,
+rating: 4.3,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 140 },
+{ item: "人氣套餐", price: 180 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "花月屋-逢甲店 丼飯烏龍麵火鍋",
+category: "火鍋",
+img: "8.JPG",
+distance: 360,
+rating: 4.4,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 145 },
+{ item: "人氣套餐", price: 185 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "雞肉本家 逢甲店",
+category: "健康餐",
+img: "7.JPG",
+distance: 380,
+rating: 4.5,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 150 },
+{ item: "人氣套餐", price: 190 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "鬼匠拉麵-逢甲店",
+category: "拉麵",
+img: "4.JPG",
+distance: 400,
+rating: 4.1,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 155 },
+{ item: "人氣套餐", price: 195 },
+{ item: "飲料", price: 30 }
+]
+},
+
+{
+name: "大逢甲小辣椒",
+category: "小吃",
+img: "1.JPG",
+distance: 420,
+rating: 4.2,
+lat: 24.179,
+lng: 120.646,
+menu: [
+{ item: "招牌餐點", price: 160 },
+{ item: "人氣套餐", price: 200 },
+{ item: "飲料", price: 30 }
+]
+},
+
+];
+
+const shopList = document.getElementById("shopList");
+
+function renderShops(){
+
+const keyword = document.getElementById("searchInput").value;
+
+shopList.innerHTML = "";
+
+const filtered = shops.filter(shop =>
+shop.name.includes(keyword)
+);
+
+filtered.forEach((shop,index)=>{
+
+const card = document.createElement("div");
+
+card.className = "shop-card";
+
+card.innerHTML = `
+<div class="shop-img">
+<img src="${shop.img}">
+</div>
+
+<div class="shop-body">
+
+<div class="shop-name">${shop.name}</div>
+
+<div class="meta">
+${shop.category} ・ 📍${shop.distance}m ・ ⭐${shop.rating}
+</div>
+
+<div class="button-row">
+
+<button class="menu-btn" onclick="openMenu(${index})">
+菜單
+</button>
+
+<button class="map-btn"
+onclick="window.open('https://www.google.com/maps/search/?api=1&query='+shop.lat+','+shop.lng)">
+地圖
+</button>
+
+</div>
+
+</div>
+`;
+
+shopList.appendChild(card);
+
+});
+
+}
+
+function openMenu(index){
+
+const shop = shops[index];
+
+document.getElementById("modalTitle").innerText = shop.name;
+
+document.getElementById("menuList").innerHTML =
+shop.menu.map(m =>
+`<div class="menu-item">
+<span>${m.item}</span>
+<span>$${m.price}</span>
+</div>`
+).join("");
+
+document.getElementById("modalBg").style.display = "flex";
+
+}
+
+function closeMenu(){
+document.getElementById("modalBg").style.display = "none";
+}
+
+document.getElementById("searchInput")
+.addEventListener("input",renderShops);
+
+renderShops();
+
+</script>
+
 </body>
 </html>
